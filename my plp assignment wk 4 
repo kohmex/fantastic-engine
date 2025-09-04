@@ -1,0 +1,29 @@
+def read_and_write_file(input_filename, output_filename):
+    try:
+        # Read the input file
+        with open(input_filename, 'r') as input_file:
+            text = input_file.read()
+
+        # Modify the text (convert to uppercase)
+        modified_text = text.upper()
+
+        # Write the modified text to the output file
+        with open(output_filename, 'w') as output_file:
+            output_file.write(modified_text)
+
+        print(f"File modified successfully. Output written to {output_filename}")
+
+    except FileNotFoundError:
+        print(f"File {input_filename} not found.")
+
+# Example usage
+input_filename = 'input.txt'
+output_filename = 'output.txt'
+
+# Create a sample input file
+with open(input_filename, 'w') as file:
+    file.write("Hello, World!\n")
+    file.write("This is a sample text.\n")
+    file.write("It will be converted to uppercase.")
+
+read_and_write_file(input_filename, output_filename)
