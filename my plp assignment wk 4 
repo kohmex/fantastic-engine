@@ -15,15 +15,3 @@ def read_and_write_file(input_filename, output_filename):
 
     except FileNotFoundError:
         print(f"File {input_filename} not found.")
-
-# Example usage
-input_filename = 'input.txt'
-output_filename = 'output.txt'
-
-# Create a sample input file
-with open(input_filename, 'w') as file:
-    file.write("Hello, World!\n")
-    file.write("This is a sample text.\n")
-    file.write("It will be converted to uppercase.")
-
-read_and_write_file(input_filename, output_filename)
