@@ -1,0 +1,79 @@
+# superhero.py
+
+class Superhero:
+    def __init__(self, name, age, powers, costume_color):
+        """
+        Initialize a Superhero object.
+
+        Args:
+            name (str): The superhero's name.
+            age (int): The superhero's age.
+            powers (list): A list of the superhero's powers.
+            costume_color (str): The superhero's costume color.
+        """
+        self.name = name
+        self.age = age
+        self.powers = powers
+        self.costume_color = costume_color
+
+    def display_info(self):
+        """
+        Display the superhero's information.
+        """
+        print(f"Name: {self.name}")
+        print(f"Age: {self.age}")
+        print(f"Powers: {', '.join(self.powers)}")
+        print(f"Costume Color: {self.costume_color}")
+
+    def use_power(self, power):
+        """
+        Use a specific power.
+
+        Args:
+            power (str): The power to use.
+        """
+        if power in self.powers:
+            print(f"{self.name} uses {power}!")
+        else:
+            print(f"{self.name} doesn't have the power {power}.")
+
+class FlyingSuperhero(Superhero):
+    def __init__(self, name, age, powers, costume_color, wingspan):
+        """
+        Initialize a FlyingSuperhero object.
+
+        Args:
+            name (str): The superhero's name.
+            age (int): The superhero's age.
+            powers (list): A list of the superhero's powers.
+            costume_color (str): The superhero's costume color.
+            wingspan (int): The superhero's wingspan.
+        """
+        super().__init__(name, age, powers, costume_color)
+        self.wingspan = wingspan
+
+    def display_info(self):
+        """
+        Display the flying superhero's information.
+        """
+        super().display_info()
+        print(f"Wingspan: {self.wingspan} feet")
+
+    def fly(self):
+        """
+        Make the flying superhero fly.
+        """
+        print(f"{self.name} takes to the skies!")
+
+# Example usage
+if __name__ == "__main__":
+    # Create a Superhero object
+    iron_man = Superhero("Iron Man", 45, ["Genius Intellect", "Armored Suit"], "Red and Gold")
+    iron_man.display_info()
+    iron_man.use_power("Genius Intellect")
+
+    # Create a FlyingSuperhero object
+    superman = FlyingSuperhero("Superman", 30, ["Super Strength", "X-Ray Vision", "Heat Vision"], "Blue and Red", 10)
+    superman.display_info()
+    superman.use_power("Super Strength")
+    superman.fly()
