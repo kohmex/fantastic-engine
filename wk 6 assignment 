@@ -1,0 +1,51 @@
+import os
+import requests
+from urllib.parse import urlparse
+
+def fetch_image(url):
+    """
+    Fetch an image from the provided URL and save it to the Fetched_Images directory.
+
+    Args:
+        url (str): The URL of the image to fetch.
+
+    Returns:
+        bool: True if the image was fetched successfully, False otherwise.
+    """
+    try:
+        # Send a GET request to the URL
+        response = requests.get(url)
+
+        # Check for HTTP errors
+        response.raise_for_status()
+
+        # Get the filename from the URL or generate one if not available
+        filename = os.path.basename(urlparse(url).path)
+        if not filename:
+            filename = "image.jpg"
+
+        # Create the Fetched_Images directory if it doesn't exist
+        os.makedirs("Fetched_Images", exist_ok=True)
+
+        # Save the image in binary mode
+        with open(os.path.join("Fetched_Images", filename), "wb") as file:
+            file.write(response.content)
+
+        print(f"Image fetched successfully and saved to Fetched_Images/{filename}")
+        return True
+
+    except requests.exceptions.HTTPError as e:
+        print(f"HTTP error occurred: {e}")
+    except requests.exceptions.RequestException as e:
+        print(f"Request error occurred: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+    return False
+
+def main():
+    url = input("Please enter the URL of the image to fetch: ")
+    fetch_image(url)
+
+if __name__ == "__main__":
+    main()
