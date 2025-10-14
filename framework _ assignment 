@@ -1,0 +1,97 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from collections import Counter
+from wordcloud import WordCloud
+import streamlit as st
+
+# Function to load data
+def load_data(file_path):
+    try:
+        df = pd.read_csv(file_path)
+        return df
+    except Exception as e:
+        print(f"Error loading data: {e}")
+        return None
+
+# Function to clean data
+def clean_data(df):
+    try:
+        df.fillna('', inplace=True)
+        df['publish_time'] = pd.to_datetime(df['publish_time'])
+        df['year'] = df['publish_time'].dt.year
+        df['abstract_word_count'] = df['abstract'].apply(lambda x: len(x.split()))
+        return df
+    except Exception as e:
+        print(f"Error cleaning data: {e}")
+        return None
+
+# Function to perform analysis
+def perform_analysis(df):
+    try:
+        papers_by_year = df['year'].value_counts()
+        top_journals = df['journal'].value_counts().head(10)
+        title_words = ' '.join(df['title']).split()
+        word_freq = Counter(title_words)
+        return papers_by_year, top_journals, word_freq
+    except Exception as e:
+        print(f"Error performing analysis: {e}")
+        return None
+
+# Function to create visualizations
+def create_visualizations(df):
+    try:
+        papers_by_year = df['year'].value_counts()
+        top_journals = df['journal'].value_counts().head(10)
+        
+        fig1, ax1 = plt.subplots(figsize=(10, 6))
+        papers_by_year.plot(kind='bar', ax=ax1)
+        ax1.set_title('Number of Publications Over Time')
+        ax1.set_xlabel('Year')
+        ax1.set_ylabel('Number of Publications')
+        
+        fig2, ax2 = plt.subplots(figsize=(10, 6))
+        top_journals.plot(kind='bar', ax=ax2)
+        ax2.set_title('Top Publishing Journals')
+        ax2.set_xlabel('Journal')
+        ax2.set_ylabel('Number of Publications')
+        
+        wordcloud = WordCloud(width=800, height=400).generate(' '.join(df['title']))
+        fig3, ax3 = plt.subplots(figsize=(10, 6))
+        ax3.imshow(wordcloud, interpolation='bilinear')
+        ax3.axis('off')
+        
+        return fig1, fig2, fig3
+    except Exception as e:
+        print(f"Error creating visualizations: {e}")
+        return None
+
+# Load data
+df = load_data('metadata.csv')
+
+# Clean data
+cleaned_df = clean_data(df)
+
+# Perform analysis
+papers_by_year, top_journals, word_freq = perform_analysis(cleaned_df)
+
+# Create visualizations
+fig1, fig2, fig3 = create_visualizations(cleaned_df)
+
+# Streamlit app
+st.title("CORD-19 Data Explorer")
+st.write("Simple exploration of COVID-19 research papers")
+
+year_range = st.slider("Select year range", 2019, 2022, (2020, 2021))
+filtered_df = cleaned_df[(cleaned_df['year'] >= year_range[0]) & (cleaned_df['year'] <= year_range[1])]
+
+st.write("Number of Publications Over Time")
+st.bar_chart(filtered_df['year'].value_counts())
+
+st.write("Top Publishing Journals")
+st.bar_chart(filtered_df['journal'].value_counts().head(10))
+
+st.write("Word Cloud")
+st.image(fig3)
+
+st.write("Sample of the Data")
+st.write(filtered_df.head())
